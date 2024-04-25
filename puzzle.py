@@ -1,8 +1,10 @@
 import heapq
 import numpy as np
+from queue import PriorityQueue
+import sys
 
 
-class PuzzleState:
+class puzzle:
     def __init__(self, board, goal, moves=0, prev=None, heuristic="manhattan"):
         self.board = np.array(board)
         self.prev = prev
@@ -54,22 +56,20 @@ class PuzzleState:
             if 0 <= nx < self.dimension and 0 <= ny < self.dimension:
                 new_board = self.board.copy()
                 new_board[x, y], new_board[nx, ny] = new_board[nx, ny], new_board[x, y]
-                successors.append(
-                    PuzzleState(new_board, self.goal, self.moves + 1, self)
-                )
+                successors.append(puzzle(new_board, self.goal, self.moves + 1, self))
         return successors
 
     def __lt__(self, other):
         return self.f < other.f
 
     def __repr__(self):
-        return f"PuzzleState(moves={self.moves}, heuristic={self.heuristic_value}, board=\n{self.board})"
+        return f"puzzle(moves={self.moves}, heuristic={self.heuristic_value}, board=\n{self.board})"
 
 
 def a_star_search(initial, goal, heuristic="manhattan"):
     open_set = []
     closed_set = set()
-    initial_state = PuzzleState(initial, goal, heuristic=heuristic)
+    initial_state = puzzle(initial, goal, heuristic=heuristic)
     heapq.heappush(open_set, initial_state)
     while open_set:
         current_state = heapq.heappop(open_set)
@@ -82,25 +82,3 @@ def a_star_search(initial, goal, heuristic="manhattan"):
             heapq.heappush(open_set, successor)
     return None
 
-
-def print_solution(solution):
-    path = []
-    while solution:
-        path.append(solution.board)
-        solution = solution.prev
-    move_count = 0
-    for step in reversed(path):
-        print(f"Move {move_count}:")
-        print(step)
-        print()
-        move_count += 1
-
-
-# Example usage
-initial = [[2, 8, 3], [1, 6, 4], [7, 0, 5]]
-goal = [[1, 2, 3], [8, 0, 4], [7, 6, 5]]
-solution = a_star_search(initial, goal, heuristic="hamming")
-if solution:
-    print_solution(solution)
-else:
-    print("No solution found.")
