@@ -17,14 +17,25 @@ class PuzzleState:
             self.heuristic_value = self.calculate_manhattan_distance()
         elif heuristic == "hamming":
             self.heuristic_value = self.calculate_hamming_distance()
+        elif heuristic == "linear_conflict":
+            self.heuristic_value = self.calculate_linear_conflict()
         self.f = self.moves + self.heuristic_value
+
+    def calculate_linear_conflict(self):
+        distance = 0
+        for i in range(self.dimension):
+            for j in range(self.dimension):
+                if self.board[i, j] != 0:
+                    x, y = np.where(self.goal == self.board[i, j])
+                    distance += abs(x - i) + abs(y - j)
+        return distance
 
     def calculate_manhattan_distance(self):
         distance = 0
         for i in range(self.dimension):
             for j in range(self.dimension):
                 if self.board[i, j] != 0:
-                    x, y = divmod(self.board[i, j] - 1, self.dimension)
+                    x, y = np.where(self.goal == self.board[i, j])
                     distance += abs(x - i) + abs(y - j)
         return distance
 
@@ -89,7 +100,7 @@ def print_solution(solution):
 initial = [[2, 8, 3], [1, 6, 4], [7, 0, 5]]
 goal = [[1, 2, 3], [8, 0, 4], [7, 6, 5]]
 solution = a_star_search(initial, goal, heuristic="hamming")
-# if solution:
-#    print_solution(solution)
-# else:
-#    print("No solution found.")
+if solution:
+    print_solution(solution)
+else:
+    print("No solution found.")
