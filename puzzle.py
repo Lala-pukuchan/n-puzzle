@@ -1,7 +1,5 @@
 import heapq
 import numpy as np
-from queue import PriorityQueue
-import sys
 
 
 class puzzle:
@@ -55,15 +53,19 @@ class puzzle:
             nx, ny = x + dx, y + dy
             if 0 <= nx < self.dimension and 0 <= ny < self.dimension:
                 new_board = self.board.copy()
-                new_board[x, y], new_board[nx, ny] = new_board[nx, ny], new_board[x, y]
-                successors.append(puzzle(new_board, self.goal, self.moves + 1, self))
+                new_board[x, y], new_board[nx, ny] = \
+                    new_board[nx, ny], new_board[x, y]
+                successors.append(
+                    puzzle(new_board, self.goal, self.moves + 1, self)
+                )
         return successors
 
     def __lt__(self, other):
         return self.f < other.f
 
     def __repr__(self):
-        return f"puzzle(moves={self.moves}, heuristic={self.heuristic_value}, board=\n{self.board})"
+        return f"puzzle(moves={self.moves}, heuristic={self.heuristic_value}, \
+            board=\n{self.board})"
 
 
 def a_star_search(initial, goal, heuristic="manhattan"):
@@ -81,4 +83,3 @@ def a_star_search(initial, goal, heuristic="manhattan"):
                 continue
             heapq.heappush(open_set, successor)
     return None
-
