@@ -27,9 +27,17 @@ def check_exist_solution(input_array, goal_array):
     inv_count_goal = 0
     for i in range(len(input_array)):
         for j in range(i + 1, len(input_array)):
-            if input_array[i] and input_array[j] and input_array[i] > input_array[j]:
+            if (
+                input_array[i]
+                and input_array[j]
+                and input_array[i] > input_array[j]
+            ):
                 inv_count_input += 1
-            if goal_array[i] and goal_array[j] and goal_array[i] > goal_array[j]:
+            if (
+                goal_array[i]
+                and goal_array[j]
+                and goal_array[i] > goal_array[j]
+            ):
                 inv_count_goal += 1
     if inv_count_input % 2 == inv_count_goal % 2:
         return True
@@ -45,7 +53,9 @@ def generate_snail_goal(n):
         goal_array[x][y] = i
         next_x, next_y = x + directions[cur_dir][0], y + directions[cur_dir][1]
         if not (
-            0 <= next_x < n and 0 <= next_y < n and goal_array[next_x][next_y] == 0
+            0 <= next_x < n
+            and 0 <= next_y < n
+            and goal_array[next_x][next_y] == 0
         ):
             cur_dir = (cur_dir + 1) % 4
             next_x, next_y = (

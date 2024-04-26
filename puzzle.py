@@ -35,7 +35,10 @@ class puzzle:
             current_row = []
             goal_row = []
             for j in range(self.dimension):
-                if self.board[i][j] != 0 and (self.board[i][j] in self.goal[i]):
+                if (
+                    self.board[i][j] != 0
+                    and (self.board[i][j] in self.goal[i])
+                ):
                     current_row.append(self.board[i][j])
                 if self.goal[i][j] != 0:
                     goal_row.append(self.goal[i][j])
@@ -51,7 +54,6 @@ class puzzle:
                 if self.goal[i][j] != 0:
                     goal_col.append(self.goal[i][j])
 
-            # Filter current_col to only include elements that are also in goal_col
             current_col = [x for x in current_col if x in goal_col]
             linear_conflict += self.count_conflicts(current_col, goal_col)
 
