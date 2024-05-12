@@ -1,7 +1,25 @@
 import sys
 import argparse
 from puzzle import a_star_search
+import numpy as np
+import random
 
+def generate_random_puzzle(n):
+    numbers = list(range(n * n))  # 0 から n*n-1 までの数
+    random.shuffle(numbers)  # 数をランダムに並べ替える
+    puzzle = []
+    for i in range(n):
+        puzzle.append(numbers[i*n:(i+1)*n])
+    return puzzle
+
+def generate_random_puzzle_file(n):
+    puzzle = generate_random_puzzle(n)
+    filename = 'temp_puzzle.txt'
+    with open(filename, 'w') as f:
+        f.write(f"{n}\n")
+        for row in puzzle:
+            f.write(' '.join(map(str, row)) + "\n")
+    return filename
 
 def print_solution(solution, total_states_selected, max_states_in_memory):
     path = []
@@ -71,8 +89,18 @@ def main():
     parser = argparse.ArgumentParser(
         description="Solve n-puzzle using A* search algorithm."
     )
-    parser.add_argument("filename",
-                        help="The filename containing the puzzle to solve.")
+    group = parser.add_mutually_exclusive_group(required=True)
+    group.add_argument(
+        "-r", 
+        "--random", 
+        type=int, 
+        help="Generate a random puzzle of specified size."
+    )
+    group.add_argument(
+        "filename",
+        nargs='?',
+        help="The filename containing the puzzle to solve."
+    )
     parser.add_argument(
         "-a",
         "--algorithm",
@@ -81,9 +109,15 @@ def main():
         help="The heuristic algorithm to use (default: hamming).",
     )
     args = parser.parse_args()
-
-    filename = args.filename
     heuristic = args.algorithm
+    if args.random:
+        filename = generate_random_puzzle_file(args.random)
+    else:
+        filename = args.filename
+
+    if not filename:
+        print("Error: Please specify a filename or use -r option to generate a random puzzle.")
+        sys.exit(1)
 
     try:
         with open(filename, "r") as file:
