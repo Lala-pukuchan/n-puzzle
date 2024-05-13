@@ -134,4 +134,5 @@ def a_star_search(initial, goal, heuristic="manhattan"):
         max_states_in_memory = max(
             max_states_in_memory, len(open_set) + len(closed_set)
         )
+    print(f"Processing: {current_state} with f={current_state.f}")
     return None, total_states_selected, max_states_in_memory

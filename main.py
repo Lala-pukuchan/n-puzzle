@@ -2,6 +2,7 @@ import sys
 import argparse
 from puzzle import a_star_search
 import numpy as np
+import os
 import random
 
 def generate_random_puzzle(n):
@@ -13,13 +14,33 @@ def generate_random_puzzle(n):
     return puzzle
 
 def generate_random_puzzle_file(n):
+    # puzzles ディレクトリを指定
+    directory = 'puzzles'
+    os.makedirs(directory, exist_ok=True)  # ディレクトリが存在しない場合は作成
+    
+    # ディレクトリ内のファイルをリストアップして最大の番号を見つける
+    max_num = 0
+    for file in os.listdir(directory):
+        if file.startswith("temp_puzzle_") and file.endswith(".txt"):
+            num_part = file[len("temp_puzzle_"):-len(".txt")]  # "temp_puzzle_" と ".txt" を取り除いた部分
+            if num_part.isdigit():
+                num = int(num_part)
+                if num > max_num:
+                    max_num = num
+
+    # 新しいファイル番号を決定
+    new_filename = f'{max_num + 1}_temp_puzzle.txt'
+    
+    # ファイルのフルパスを生成
+    full_path = os.path.join(directory, new_filename)
+    
+    # ランダムパズルを生成してファイルに保存
     puzzle = generate_random_puzzle(n)
-    filename = 'temp_puzzle.txt'
-    with open(filename, 'w') as f:
+    with open(full_path, 'w') as f:
         f.write(f"{n}\n")
         for row in puzzle:
             f.write(' '.join(map(str, row)) + "\n")
-    return filename
+    return full_path
 
 def print_solution(solution, total_states_selected, max_states_in_memory):
     path = []
